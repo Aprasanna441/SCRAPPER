@@ -87,6 +87,7 @@ with sync_playwright() as playwright:
         if pagination_btn:
             pagination_btn.click() #traverse to new Page and repeat process below While loop
         else:
+            download_btn=page.get_by_role('')
             break
         
 
