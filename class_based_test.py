@@ -2,13 +2,17 @@ from playwright.sync_api import sync_playwright,Page,expect
 import time
 import csv
 
-url="https://aca-oregon.accela.com/LANE_CO/Cap/CapHome.aspx?module=CodeCompliance&TabName=CodeCompliance"
 
-class OHLaneScraper:
+
+class Config:
+   path="./data/OOP/"
+   start_date="01/01/2000"
+   url="https://aca-oregon.accela.com/LANE_CO/Cap/CapHome.aspx?module=CodeCompliance&TabName=CodeCompliance"
+
+class OHLaneScraper(Config):
       
       # method to interact with elements
-      def __init__(self):
-         self.url=url
+      
 
       def click_elements(self):
         #select complain  as record type
@@ -19,7 +23,7 @@ class OHLaneScraper:
         #start date
         date_element= self.page.wait_for_selector('input#ctl00_PlaceHolderMain_generalSearchForm_txtGSStartDate',state='visible')
         date_element.fill('')
-        date_element.fill('01/01/2000')
+        date_element.fill(self.start_date)
         time.sleep(3)
 
         #click search button
@@ -48,15 +52,16 @@ class OHLaneScraper:
             
         
       def download(self):
+           
            download_link_by_selector=self.page.locator("#ctl00_PlaceHolderMain_dgvPermitList_gdvPermitList_gdvPermitListtop4btnExport")
            if download_link_by_selector:
-            with self.page.expect_download() as download_info:
-                download_link_by_selector.click()
-            download = download_info.value
-            download.save_as("./data/OOP/" + "download")
-            path = download.path()
-            print(download.path())
-            time.sleep(5000)
+              with self.page.expect_download() as download_info:
+                  download_link_by_selector.click()
+              download = download_info.value
+              download.save_as(self.path + "download")
+              path = download.path()
+              print(download.path())
+              time.sleep(5000)
 
 
 obj=OHLaneScraper()
